@@ -49,5 +49,37 @@ the main workflow now that Refinitiv data is available.
 
 - Implement and test the **bootstrapping algorithm** on **US Treasury coupon bonds**
   imported from Refinitiv, and compare the resulting bootstrapped zero rates to:
-  - the FRED reference curve, and
   - the zero‑coupon curve implied by US STRIPS (`US_Zero` universe).
+  - [ ] the FRED reference curve
+  - [ ] Extend to DE Bunds, FR OATs
+  - [ ] Nelson‑Siegel / cubic spline smoothing
+  - [ ] Compare to official yield curves
+
+---
+
+### Pipeline
+
+```
+import_refinitiv_data.py  →  data/refinitiv/<YYYYMMDD_HHMMSS>/  →  run_zero_curves.py
+```
+
+| Script | Role |
+|---|---|
+| `import_refinitiv_data.py` | Fetches bonds, buckets by maturity, saves one folder per run |
+| `run_zero_curves.py` | Bootstraps zero curve + STRIPS curve, compares both |
+
+### Usage
+
+```bash
+# Import (default: 1 bond/bucket)
+python import_refinitiv_data.py
+python import_refinitiv_data.py --bonds-per-bucket 3
+
+# Curve calculation (auto-picks latest import)
+python run_zero_curves.py
+python run_zero_curves.py --import 20260219_195115
+```
+
+### Results
+
+→ See [`docs/first_bootstrapping_results.md`](docs/first_bootstrapping_results.md) — methodology, plots and rate tables.
